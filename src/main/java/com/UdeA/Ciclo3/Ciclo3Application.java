@@ -1,5 +1,6 @@
 package com.UdeA.Ciclo3;
 
+import com.UdeA.Ciclo3.modelos.Empresa;
 import org.hibernate.annotations.GeneratorType;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -14,6 +15,14 @@ public class Ciclo3Application {
 	@GetMapping("/hello")
 	public String hello() {
 		return "Hello Mundo Prueba";
+	}
+
+	@GetMapping("/test")
+	public String test() {
+		Empresa emp =new Empresa("Solar SAS", "calle la geta", "321321321", "800181923");
+		emp.setNombre("SOLAR LTDA.");
+	return emp.getNombre();
+
 	}
 	public static void main(String[] args) {
 
