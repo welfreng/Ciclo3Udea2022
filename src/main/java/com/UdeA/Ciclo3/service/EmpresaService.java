@@ -24,7 +24,7 @@ public class EmpresaService {
     }
 
     //metodo que me trae un objeto de tipo empresa
-    public Empresa getEmpresabyId(Integer id) {
+    public Empresa getEmpresaById(Integer id) {
         return empresaRepository.findById(id).get();
     }
 
@@ -38,5 +38,9 @@ public class EmpresaService {
     }
 
     //metodo delete pendiente
-
+    public Empresa deleteEmrpesa(Integer id) {
+            Empresa empresa = empresaRepository.findById(id).get();
+            empresaRepository.delete(empresa);
+            return empresa;
+    }
 }
