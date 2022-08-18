@@ -10,19 +10,24 @@ public class Empleado {
     private int id;
     private String nombre;
     private String correo;
-    private String rol;
+
 
     @ManyToOne
+    @JoinColumn(name = "empresa_id")
     private Empresa empresa;
+
+    private String rol;
 
     public Empleado() {
 
     }
-    public Empleado(int id, String nombre, String correo, String rol) {
-        this.id = id;
+    public Empleado(String nombre, String correo, Empresa empresa, String rol) {
+
         this.nombre = nombre;
         this.correo = correo;
+        this.empresa = empresa;
         this.rol = rol;
+
     }
 
     public int getId() {
