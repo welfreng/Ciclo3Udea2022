@@ -9,10 +9,19 @@ import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfi
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-//@RestController
+
+
+
+@RestController
 @SpringBootApplication(exclude = {SecurityAutoConfiguration.class})
 public class Ciclo3Application {
 
+
+	public static void main(String[] args) {
+
+		SpringApplication.run(Ciclo3Application.class, args);
+
+	}
 	@GetMapping("/hello")
 	public String hello() {
 		return "Hello Mundo Prueba";
@@ -34,10 +43,6 @@ public class Ciclo3Application {
 	}
 
 	 */
-	public static void main(String[] args) {
 
-		SpringApplication.run(Ciclo3Application.class, args);
-
-	}
 
 }
