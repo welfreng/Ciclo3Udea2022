@@ -29,7 +29,7 @@ public class EmpresaService {
     }
 
     //Metodo para guardar o actualizar objetos de tipo empresa
-    public boolean saveOrUpdate(Empresa empresa)  {
+    public boolean saveOrUpdateEmpresa(Empresa empresa)  {
         Empresa emp = empresaRepository.save(empresa);
         if (empresaRepository.findById(emp.getId()) != null) {
             return true;

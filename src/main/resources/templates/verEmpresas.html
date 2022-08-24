@@ -8,6 +8,16 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+
+    <style>
+        a{
+    color:white;
+    }
+    a:hover {
+    color: black;
+    text-decoration:none;
+    }
+    </style>
 </head>
 <body>
 <div class="container-fluid">
@@ -24,17 +34,22 @@
             <th>Eliminar</th>
 
         </tr>
+        <!-- Llamamos a emplist del controlador controllerFull -->
         <tr th:each="empresa : ${emplist}">
             <td th:text="${empresa.id}"></td>
             <td th:text="${empresa.nombre}"></td>
             <td th:text="${empresa.direccion}"></td>
             <td th:text="${empresa.telefono}"></td>
             <td th:text="${empresa.NIT}"></td>
-            <td><button type="button" class="btn btn-warning"><a th:href="@{/editarEmpresa">Editar</a></button> </td>
-            <td><button type="button" class="btn btn-danger"><a th:href="@eliminarEmpresa">Eliminar</a></button> </td>
+            <td><button type="button" class="btn btn-warning"><a th:href="@{/EditarEmpresas}">Editar</a></button> </td>
+            <td><button type="button" class="btn btn-danger"><a th:href="@{/EliminarEmpresas}">Eliminar</a></button> </td>
 
         </tr>
     </table>
+    <!-- Creeamos el boton agregarEmpresa -->
+    <button type="button" class="btn btn-info"><a th:href="@{/AgregarEmpresas}">Agregar Nueva Empresa</a></button>
+
+
 
 
 </div>
