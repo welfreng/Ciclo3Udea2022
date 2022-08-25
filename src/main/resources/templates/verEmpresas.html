@@ -35,14 +35,14 @@
 
         </tr>
         <!-- Llamamos a emplist del controlador controllerFull -->
-        <tr th:each="empresa : ${emplist}">
+        <tr th:each="empresa : ${emplist}">   <!-- la variable que esta en el each lo asignamos para sacar el id de los botones -->
             <td th:text="${empresa.id}"></td>
             <td th:text="${empresa.nombre}"></td>
             <td th:text="${empresa.direccion}"></td>
             <td th:text="${empresa.telefono}"></td>
             <td th:text="${empresa.NIT}"></td>
-            <td><button type="button" class="btn btn-warning"><a th:href="@{/EditarEmpresas}">Editar</a></button> </td>
-            <td><button type="button" class="btn btn-danger"><a th:href="@{/EliminarEmpresas}">Eliminar</a></button> </td>
+            <td><button type="button" class="btn btn-warning"><a th:href="@{/EditarEmpresas/{id}(id=${empresa.id})}">Editar</a></button> </td>
+            <td><button type="button" class="btn btn-danger"><a th:href="@{/EliminarEmpresa/{id}(id=${empresa.id})}">Eliminar</a></button> </td>
 
         </tr>
     </table>
