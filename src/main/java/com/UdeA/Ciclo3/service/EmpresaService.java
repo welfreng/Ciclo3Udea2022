@@ -18,7 +18,7 @@ public class EmpresaService {
     //Metodo que reornara la lista de empresa usando heredados del JpaRepository
     public List<Empresa> getEmpresa(){
         List<Empresa> empresaList = new ArrayList<>();
-        empresaRepository.findAll().forEach(Empresa -> empresaList.add(Empresa));
+        empresaRepository.findAll().forEach(empresa -> empresaList.add(empresa));
 
         return empresaList;
     }
@@ -40,9 +40,10 @@ public class EmpresaService {
 
     public boolean deleteEmpresa(Integer id){
         empresaRepository.deleteById(id);
-        if (getEmpresaById(id) != null){
-            return false;
+
+        if (empresaRepository.findById(id) != null){
+            return true;
         }
-        return true;
+        return false;
     }
 }

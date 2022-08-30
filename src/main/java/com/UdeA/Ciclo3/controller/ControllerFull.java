@@ -20,53 +20,63 @@ public class ControllerFull {
 
     //Get
     @GetMapping({"/", "/VerEmpresas"})
-    public String viewEmpresas(Model model) {
+    public String viewEmpresas(Model model, @ModelAttribute("mensaje") String mensaje) {
         List<Empresa> listEmpresas = empresaService.getEmpresa();
         model.addAttribute("emplist", listEmpresas);
+        model.addAttribute("mensaje", mensaje);
 
         return "verEmpresas";  //aqui devolvemos a la pagina pero debemos ingresarla al template para cuando creemos el html
     }
 
-    //Post
+
     @GetMapping("/AgregarEmpresas") //los servicios empiezan por mayuscula los template no
-    public String nuevaEmpresas(Model model) {
+    public String nuevaEmpresas(Model model, @ModelAttribute("mensaje") String mensaje) {
         Empresa emp = new Empresa();
         model.addAttribute("emp", emp);
+        model.addAttribute("mensaje", mensaje);
         return "agregarEmpresas";// esto es un template
     }
-
+    //Post
     @PostMapping("/GuardarEmpresas")
     public String guardarEmpresas(Empresa emp, RedirectAttributes redirectAttributes){
         if(empresaService.saveOrUpdateEmpresa(emp) == true){
+            redirectAttributes.addFlashAttribute("mensaje", "saveOk"); //mensajes de aviso
             return "redirect:/VerEmpresas";
             }
-        return "redirect:/agregarEmpresas";
+        redirectAttributes.addFlashAttribute("mensaje", "saveError");
+        return "redirect:/agregarEmpresas";  //esto es un servicio
+
     }
 
     @GetMapping("/EditarEmpresas/{id}")
-    public String editarEmpresa(Model model, @PathVariable Integer id){
+    public String editarEmpresa(Model model, @PathVariable Integer id, @ModelAttribute("mensaje") String mensaje){
         Empresa emp = empresaService.getEmpresaById(id);
         model.addAttribute("emp", emp);
+        model.addAttribute("mensaje", mensaje);
         return "editarEmpresa";
     }
 
     @PostMapping("/ActualizarEmpresa")
-    public String actualizarEmpresa(@ModelAttribute("emp") Empresa emp){
+    public String actualizarEmpresa(@ModelAttribute("emp") Empresa emp, RedirectAttributes redirectAttributes){
         if (empresaService.saveOrUpdateEmpresa(emp)) {
+            redirectAttributes.addFlashAttribute("mensaje", "updateOk");
             return "redirect:/VerEmpresas";
         }
+        redirectAttributes.addFlashAttribute("mensaje", "updateError");
         return "redirect:/EditarEmpresas";
     }
     @GetMapping("/EliminarEmpresa/{id}")
-    public String eliminarEmpresa( @PathVariable Integer id){
-        try{
-            empresaService.deleteEmpresa(id);
-            return "redirect:/VerEmpresas";
-        }catch (Exception e){
+    public String eliminarEmpresa( @PathVariable Integer id, RedirectAttributes redirectAttributes){
+
+            if (empresaService.deleteEmpresa(id)== true){
+                redirectAttributes.addFlashAttribute("mensaje", "deleteOk");
+                return "redirect:/VerEmpresas";
+        }
+            redirectAttributes.addFlashAttribute("mensaje", "deleteError");
             return "redirect:/VerEmpresas";
 
         }
 
-    }
+
 
 }

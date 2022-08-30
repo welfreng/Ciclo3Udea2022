@@ -6,8 +6,13 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+
+
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+
 
     <style>
         a{
@@ -21,8 +26,8 @@
 </head>
 <body>
 <div class="container-fluid">
-    <h3>Bienvenido a CompuMundo Developers</h3>
-    <table class="table table-striped">
+    <h3 >Bienvenido a CompuMundo Developers</h3>
+    <table class="table table-condensed">
 
         <tr>
             <th>ID</th>
@@ -49,9 +54,30 @@
     <!-- Creeamos el boton agregarEmpresa -->
     <button type="button" class="btn btn-info"><a th:href="@{/AgregarEmpresas}">Agregar Nueva Empresa</a></button>
 
-
-
-
 </div>
+
+<script th:inline="javascript">
+    window.onload = function() {
+        var msg = [[${mensaje}]];
+        if (msg=="saveOk") {
+            Command : toastr["success"]("Empresa creada correctamente")
+        } else if (msg == "updateOk") {
+            Command : toastr["success"]("Empresa actualizada correctamente")
+        } else if (msg == "deleteOk") {
+            Command : toastr["error"]("Empresa eliminada correctamente")
+        } else if (msg == "deleteError") {
+            Command : toastr["error"]("Empresa No ha sido eliminada")
+        }
+    toastr,options={
+        "positionClass": "toast-top-right",
+        "showDuration":"300",
+        "showMethod":"fadeIn",
+        "hideMethod":"fadeOut",
+    }
+
+    }
+</script>
+
 </body>
+
 </html>
