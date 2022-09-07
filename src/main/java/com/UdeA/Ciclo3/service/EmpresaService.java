@@ -16,7 +16,7 @@ public class EmpresaService {
     EmpresaRepository empresaRepository; //creamos un objeto tipo empresa para usar los metodos
 
     //Metodo que reornara la lista de empresa usando heredados del JpaRepository
-    public List<Empresa> getEmpresa(){
+    public List<Empresa> getAllEmpresas(){
         List<Empresa> empresaList = new ArrayList<>();
         empresaRepository.findAll().forEach(empresa -> empresaList.add(empresa));
 
