@@ -29,6 +29,7 @@ public class EmpresaService {
     }
 
     //Metodo para guardar o actualizar objetos de tipo empresa
+
     public boolean saveOrUpdateEmpresa(Empresa empresa)  {
         Empresa emp = empresaRepository.save(empresa);
         if (empresaRepository.findById(emp.getId()) != null) {
@@ -36,7 +37,6 @@ public class EmpresaService {
         }
         return false;
     }
-
 
     public boolean deleteEmpresa(Integer id){
         empresaRepository.deleteById(id);
