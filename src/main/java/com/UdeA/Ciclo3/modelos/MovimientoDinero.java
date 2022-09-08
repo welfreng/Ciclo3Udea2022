@@ -3,7 +3,7 @@ package com.UdeA.Ciclo3.modelos;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "Movimiento")
+@Table(name = "Movimientos")
 public class MovimientoDinero {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
