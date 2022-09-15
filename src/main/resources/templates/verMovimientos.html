@@ -22,13 +22,14 @@
 <body>
 
 <div class="container">
+    <button type="button" class="btn btn-danger" style="float:right"><a th:href="@{/logout}">Cerrar Sesión</a></button>
 
     <h1> Lista de Movimientos</h1>
     <!--Dibujamos la tabla-->
     <br><table class="table table-bordered">
     <tr>
         <th>ID</th>
-        <th>Valor</th>
+        <th class="text-right">Valor</th>
         <th>Concepto</th>
         <th>Usuario Responsable</th>
         <th>Fecha del Movimiento</th>
@@ -40,7 +41,7 @@
     <!--En nuestro controller, creamos en viewMovimientos un modelo con un atributo llamado movlist donde esta guardada la lista de todos los movimientos-->
     <tr th:each="movimiento : ${movlist}">
         <td th:text="${movimiento.id}"></td>
-        <td class="text align-right" th:text="${#numbers.formatCurrency(movimiento.monto)}"></td>
+        <td class="text-right" th:text="${#numbers.formatCurrency(movimiento.monto)}"></td>
         <td th:if="${movimiento.concepto=='1'}">Papeleria</td>
         <td th:if="${movimiento.concepto=='2'}">Servicios Publicos/privados</td>
         <td th:if="${movimiento.concepto=='3'}">Operativos</td>
@@ -56,13 +57,24 @@
     </tr>
 </table>
 
-    <div class ="row">
+    <!-- CAMPO PARA EL AREA DE NAVEGACION -->
+    <nav aria-label="Ejemplo navegacion">
+        <ul class="pagination mt-4">
+            <li th:class="${paginaActual==estado.index} ? 'active' : '' " th:each="pagina, estado: ${paginas}" class="page-item">
+                <a th:href="@{/VerMovimientos/(pagina=${estado.index})}" class="page-link" th:text="${estado.index}+1"></a>
+            </li>
+        </ul>
+    </nav>
+
+
+
+    <!-- Campo para ver la suma de TODOS LOS MOVIMIENTOS FILTRADOS -->
+    <div class="row">
         <div class="form-group col-md-12">
-            <label class="col-md-3 control-label" for="SumaMontos">Total Movimientos</label>
+            <label class="col-md-3" for="SumaMontos">Total Movimientos:</label>
             <div class="col-md-6">
                 <p th:text="${#numbers.formatCurrency(SumaMontos)}" class="form-control" id="SumaMontos"></p>
             </div>
-
         </div>
     </div>
 

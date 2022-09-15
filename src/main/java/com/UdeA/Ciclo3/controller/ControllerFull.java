@@ -3,16 +3,19 @@ package com.UdeA.Ciclo3.controller;
 import com.UdeA.Ciclo3.modelos.Empleado;
 import com.UdeA.Ciclo3.modelos.Empresa;
 import com.UdeA.Ciclo3.modelos.MovimientoDinero;
+import com.UdeA.Ciclo3.repo.MovimientosRepository;
 import com.UdeA.Ciclo3.service.EmpleadoService;
 import com.UdeA.Ciclo3.service.EmpresaService;
 import com.UdeA.Ciclo3.service.MovimientosService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
@@ -26,6 +29,9 @@ public class ControllerFull {
 
     @Autowired
     MovimientosService movimientosService;
+
+    @Autowired
+    MovimientosRepository movimientosRepositor;
 
     //EMPRESAS
     @GetMapping ({"/","/VerEmpresas"})
@@ -108,6 +114,8 @@ public class ControllerFull {
 
     @PostMapping("/GuardarEmpleado")
     public String guardarEmpleado(Empleado empl, RedirectAttributes redirectAttributes){
+        String passEncriptada=passwordEncoder().encode(empl.getPassword());
+        empl.setPassword(passEncriptada);
         if(empleadoService.saveOrUpdateEmpleado(empl)==true){
             redirectAttributes.addFlashAttribute("mensaje","saveOK");
             return "redirect:/VerEmpleados";
@@ -129,12 +137,18 @@ public class ControllerFull {
 
     @PostMapping("/ActualizarEmpleado")
     public String updateEmpleado(@ModelAttribute("empl") Empleado empl, RedirectAttributes redirectAttributes){
+        Integer id = empl.getId();
+        String OldPass=empleadoService.getEmpleadoById(id).get().getPassword();
+        if (!empl.getPassword().equals(OldPass)) {
+            String passEncriptada = passwordEncoder().encode(empl.getPassword());
+            empl.setPassword(passEncriptada);
+        }
         if(empleadoService.saveOrUpdateEmpleado(empl)){
             redirectAttributes.addFlashAttribute("mensaje","updateOK");
             return "redirect:/VerEmpleados";
         }
         redirectAttributes.addFlashAttribute("mensaje","updateError");
-        return "redirect:/EditarEmpleado";
+        return "redirect:/EditarEmpleado"+empl.getId();
 
     }
 
@@ -157,13 +171,17 @@ public class ControllerFull {
 
     //MOVIMIENTOS
 
-    @GetMapping ("/VerMovimientos")// Controlador que nos lleva al template donde veremos todos los movimientos
-    public String viewMovimientos(Model model, @ModelAttribute("mensaje") String mensaje){
-        List<MovimientoDinero> listaMovimientos=movimientosService.getAllMovimientos();
-        model.addAttribute("movlist",listaMovimientos);
-        model.addAttribute("mensaje",mensaje);
+    @RequestMapping("/VerMovimientos")// Controlador que nos lleva al template donde veremos todos los movimientos
+    public String viewMovimientos(@RequestParam(value="pagina", required=false, defaultValue = "1") int NumeroPagina,
+                                  @RequestParam(value="medida", required=false, defaultValue = "5") int medida,
+                                  Model model, @ModelAttribute("mensaje") String mensaje) {
+        Page<MovimientoDinero> paginaMovimientos = movimientosRepositor.findAll(PageRequest.of(NumeroPagina, medida));
+        model.addAttribute("movlist", paginaMovimientos.getContent());
+        model.addAttribute("paginas", new int[paginaMovimientos.getTotalPages()]);
+        model.addAttribute("paginaActual", NumeroPagina);
+        model.addAttribute("mensaje", mensaje);
         Long sumaMonto = movimientosService.obtenerSumaMontos();
-        model.addAttribute("SumaMontos",sumaMonto);
+        model.addAttribute("SumaMontos", sumaMonto);//Mandamos la suma de todos los montos a la plantilla
         return "verMovimientos"; //Llamamos al HTML
     }
 
@@ -236,6 +254,13 @@ public class ControllerFull {
         model.addAttribute("SumaMontos",sumaMonto);
 
         return "verMovimientos"; //Llamamos al HTML
+    }
+
+
+    //Metodo para encriptar contraseñas
+    @Bean
+    public PasswordEncoder passwordEncoder(){
+        return new BCryptPasswordEncoder();
     }
 }
 

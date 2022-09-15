@@ -20,6 +20,8 @@
 <body>
 
 <div class="container">
+    <button type="button" class="btn btn-danger" style="float:right"><a th:href="@{/logout}">Cerrar Sesión</a></button>
+
     <h1> Agregue aqui los datos del Movimiento</h1>
     <br>
     <!--Crear formulario para llenar los datos del movimiento y guardarlo en el objeto mov -->
@@ -65,6 +67,7 @@
             </div>
         </div>
 
+        <!--Campo para fecha-->
         <div class="row">
             <div class="form-group col-md-12">
                 <label class="col-md-3" for="fecha">Fecha del movimiento:</label>
@@ -72,6 +75,7 @@
                     <input type="date" th:field="*{fecha}" class="form-control" id="fecha" required="required" readonly></div>
             </div>
         </div>
+
 
 
 
@@ -89,10 +93,11 @@
 
 </div>
 <script th:inline="javascript">
-    window.onload=function() {
-    document.getElementById("fecha").value = new Date().toJSON().slice(0,10).replace(/-/g,'-');
-        }
-
+  window.onload=function(){
+  document.getElementById("fecha").value=new Date().toJSON().slice(0,10).replace(/-/g,'-');
+  }
 </script>
+
+
 </body>
 </html>
