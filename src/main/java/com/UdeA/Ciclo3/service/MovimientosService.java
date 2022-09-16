@@ -1,5 +1,6 @@
 package com.UdeA.Ciclo3.service;
 
+import com.UdeA.Ciclo3.modelos.Empleado;
 import com.UdeA.Ciclo3.modelos.MovimientoDinero;
 import com.UdeA.Ciclo3.repo.MovimientosRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,13 +48,23 @@ public class MovimientosService {
         return movimientosRepository.findByEmpresa(id);
     }
 
+    //Servicio para ver la suma de todos los montos
     public Long obtenerSumaMontos(){
         return movimientosRepository.SumarMonto();
     }
+
+    //Servicio para ver la suma de los montos por empleado
     public Long MontosPorEmpleado(Integer id){
         return movimientosRepository.MontosPorEmpleado(id);
     }
+
+    //Servicio para ver la suma de los montos por empresa
     public Long MontosPorEmpresa(Integer id){
         return movimientosRepository.MontosPorEmpresa(id);
+    }
+
+    //servicio que nos deja conseguir el id de un empleado si tenemos su correo
+    public Integer IdPorCorreo(String Correo){
+        return movimientosRepository.IdPorCorreo(Correo);
     }
 }

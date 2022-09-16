@@ -7,43 +7,43 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-
-
-//Le decimos a spring que esta clase es de servicio
+//Le decimos a Spring que esta clase es de servicios
 @Service
 public class EmpresaService {
-    @Autowired  // se conecta con el repository empresaRepository
-    EmpresaRepository empresaRepository; //creamos un objeto tipo empresa para usar los metodos
+    @Autowired //Conectamos esta clase con el repository de Empresa
+    EmpresaRepository empresaRepository; //Creamos un objeto tipo EmpresaRepository para poder usar los metodos que dicha clase hereda
 
-    //Metodo que reornara la lista de empresa usando heredados del JpaRepository
+    //Metodo que retornará la lista de empresas usando metodos heredados del jpaRepository
     public List<Empresa> getAllEmpresas(){
         List<Empresa> empresaList = new ArrayList<>();
-        empresaRepository.findAll().forEach(empresa -> empresaList.add(empresa));
-
+        empresaRepository.findAll().forEach(empresa -> empresaList.add(empresa));  //Recorremos el iterable que regresa el metodo findAll del Jpa y lo guardamos en la lista creada
         return empresaList;
     }
 
-    //metodo que me trae un objeto de tipo empresa
-    public Empresa getEmpresaById(Integer id) {
+    //Metodo que me trae un objeto de tipo Empresa cuando cuento con el id de la misma
+    public Empresa getEmpresaById(Integer id){
         return empresaRepository.findById(id).get();
     }
 
-    //Metodo para guardar o actualizar objetos de tipo empresa
-
-    public boolean saveOrUpdateEmpresa(Empresa empresa)  {
-        Empresa emp = empresaRepository.save(empresa);
-        if (empresaRepository.findById(emp.getId()) != null) {
+    //Metodo para guardar o actualizar objetos de tipo Empresa
+    public boolean saveOrUpdateEmpresa(Empresa empresa){
+        Empresa emp=empresaRepository.save(empresa);
+        if (empresaRepository.findById(emp.getId())!=null){
             return true;
         }
         return false;
     }
 
+    //Metodo para eliminar empresas registradas teniendo el id
     public boolean deleteEmpresa(Integer id){
-        empresaRepository.deleteById(id);
+        empresaRepository.deleteById(id);  //Eliminar
 
-        if (empresaRepository.findById(id) != null){
+        if (empresaRepository.findById(id)!=null){  //Verificacion del servicio eliminacion
             return true;
         }
         return false;
     }
+
+
+
 }

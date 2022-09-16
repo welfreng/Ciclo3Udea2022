@@ -11,6 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
@@ -26,7 +28,6 @@ public class ControllerFull {
     EmpresaService empresaService;
     @Autowired
     EmpleadoService empleadoService;
-
     @Autowired
     MovimientosService movimientosService;
 
@@ -77,7 +78,7 @@ public class ControllerFull {
             return "redirect:/VerEmpresas";
         }
         redirectAttributes.addFlashAttribute("mensaje","updateError");
-        return "redirect:/EditarEmpresa";
+        return "redirect:/EditarEmpresa/"+emp.getId();
 
     }
 
@@ -137,10 +138,10 @@ public class ControllerFull {
 
     @PostMapping("/ActualizarEmpleado")
     public String updateEmpleado(@ModelAttribute("empl") Empleado empl, RedirectAttributes redirectAttributes){
-        Integer id = empl.getId();
-        String OldPass=empleadoService.getEmpleadoById(id).get().getPassword();
-        if (!empl.getPassword().equals(OldPass)) {
-            String passEncriptada = passwordEncoder().encode(empl.getPassword());
+        Integer id=empl.getId(); //Sacamos el id del objeto empl
+        String Oldpass=empleadoService.getEmpleadoById(id).get().getPassword(); //Con ese id consultamos la contraseña que ya esta en la base
+        if(!empl.getPassword().equals(Oldpass)){
+            String passEncriptada=passwordEncoder().encode(empl.getPassword());
             empl.setPassword(passEncriptada);
         }
         if(empleadoService.saveOrUpdateEmpleado(empl)){
@@ -148,7 +149,7 @@ public class ControllerFull {
             return "redirect:/VerEmpleados";
         }
         redirectAttributes.addFlashAttribute("mensaje","updateError");
-        return "redirect:/EditarEmpleado"+empl.getId();
+        return "redirect:/EditarEmpleado/"+empl.getId();
 
     }
 
@@ -169,19 +170,20 @@ public class ControllerFull {
         return "verEmpleados"; //Llamamos al html con el emplelist de los empleados filtrados
     }
 
+
     //MOVIMIENTOS
 
-    @RequestMapping("/VerMovimientos")// Controlador que nos lleva al template donde veremos todos los movimientos
+    @RequestMapping ("/VerMovimientos")// Controlador que nos lleva al template donde veremos todos los movimientos
     public String viewMovimientos(@RequestParam(value="pagina", required=false, defaultValue = "1") int NumeroPagina,
                                   @RequestParam(value="medida", required=false, defaultValue = "5") int medida,
-                                  Model model, @ModelAttribute("mensaje") String mensaje) {
-        Page<MovimientoDinero> paginaMovimientos = movimientosRepositor.findAll(PageRequest.of(NumeroPagina, medida));
-        model.addAttribute("movlist", paginaMovimientos.getContent());
-        model.addAttribute("paginas", new int[paginaMovimientos.getTotalPages()]);
+                                  Model model, @ModelAttribute("mensaje") String mensaje){
+        Page<MovimientoDinero> paginaMovimientos= movimientosRepositor.findAll(PageRequest.of(NumeroPagina,medida));
+        model.addAttribute("movlist",paginaMovimientos.getContent());
+        model.addAttribute("paginas",new int[paginaMovimientos.getTotalPages()]);
         model.addAttribute("paginaActual", NumeroPagina);
-        model.addAttribute("mensaje", mensaje);
-        Long sumaMonto = movimientosService.obtenerSumaMontos();
-        model.addAttribute("SumaMontos", sumaMonto);//Mandamos la suma de todos los montos a la plantilla
+        model.addAttribute("mensaje",mensaje);
+        Long sumaMonto=movimientosService.obtenerSumaMontos();
+        model.addAttribute("SumaMontos",sumaMonto);//Mandamos la suma de todos los montos a la plantilla
         return "verMovimientos"; //Llamamos al HTML
     }
 
@@ -190,8 +192,10 @@ public class ControllerFull {
         MovimientoDinero movimiento= new MovimientoDinero();
         model.addAttribute("mov",movimiento);
         model.addAttribute("mensaje",mensaje);
-        List<Empleado> listaEmpleados= empleadoService.getAllEmpleado();
-        model.addAttribute("emplelist",listaEmpleados);
+        Authentication auth= SecurityContextHolder.getContext().getAuthentication();
+        String correo=auth.getName();
+        Integer idEmpleado=movimientosService.IdPorCorreo(correo);
+        model.addAttribute("idEmpleado",idEmpleado);
         return "agregarMovimiento"; //Llamar HTML
     }
 
@@ -241,7 +245,7 @@ public class ControllerFull {
     public String movimientosPorEmpleado(@PathVariable("id")Integer id, Model model){
         List<MovimientoDinero> movlist = movimientosService.obtenerPorEmpleado(id);
         model.addAttribute("movlist",movlist);
-        Long sumaMonto = movimientosService.MontosPorEmpleado(id);
+        Long sumaMonto=movimientosService.MontosPorEmpleado(id);
         model.addAttribute("SumaMontos",sumaMonto);
         return "verMovimientos"; //Llamamos al HTML
     }
@@ -250,10 +254,15 @@ public class ControllerFull {
     public String movimientosPorEmpresa(@PathVariable("id")Integer id, Model model){
         List<MovimientoDinero> movlist = movimientosService.obtenerPorEmpresa(id);
         model.addAttribute("movlist",movlist);
-        Long sumaMonto = movimientosService.MontosPorEmpresa(id);
+        Long sumaMonto=movimientosService.MontosPorEmpresa(id);
         model.addAttribute("SumaMontos",sumaMonto);
-
         return "verMovimientos"; //Llamamos al HTML
+    }
+
+    //Controlador que me lleva al template de No autorizado
+    @RequestMapping(value="/Denegado")
+    public String accesoDenegado(){
+        return "accessDenied";
     }
 
 
@@ -263,5 +272,3 @@ public class ControllerFull {
         return new BCryptPasswordEncoder();
     }
 }
-
-

@@ -21,7 +21,7 @@
 
 <div class="container">
     <button type="button" class="btn btn-danger" style="float:right"><a th:href="@{/logout}">Cerrar Sesión</a></button>
-
+    <p th:inline="text" class="text-right">User: [[${#httpServletRequest.remoteUser}]]</p>
     <h1> Actualice aqui los datos del Empleado</h1>
     <br>
     <!--Crear formulario para llenar los datos de la empresa y guardarlo en el objeto emp -->
@@ -115,10 +115,10 @@
     <br>
     <a href="javascript: history.go(-1)" class="btn btn-info" role="button">Atrás</a>
 
-</div>
+</div><!--script para ocultar la contraseña-->
 <script th:inline="javascript">
-    window.onload = function() {
-    document.getElementById("password").type = "password";}
+  window.onload=function(){
+  document.getElementById("password").type="password"}
 </script>
 </body>
 </html>
