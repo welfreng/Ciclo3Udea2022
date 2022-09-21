@@ -6,7 +6,7 @@ import javax.persistence.*;
 @Table(name="Empresa")
 public class Empresa {
     @Id  //avisamos que esta clase manejara una llave primaria de la base de datos
-    @GeneratedValue(strategy = GenerationType.AUTO)  //creamos el autoincrement para la bade de datos
+    @GeneratedValue(strategy = GenerationType.IDENTITY)  //creamos el autoincrement para la bade de datos
     private int id; //llave primaria de la base de datos
     private String nombre;
     private String direccion;
